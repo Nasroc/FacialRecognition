@@ -3,6 +3,8 @@ import './App.css';
 import Navigation from './components/navigation/Navigation';
 import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
+import SignIn from './components/SignIn/SignIn';
+import Register from './components/Register/Register';
 import Rank from './components/Rank/Rank';
 import ParticlesBg from 'particles-bg';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
@@ -117,6 +119,8 @@ function App() {
 
     const [input, setInput ] = useState('');
     const [box, setBox ] = useState({});
+    const [route, setRoute] = useState('signin');
+    const [isSignedIn, setIsSignedIn] = useState('false');
 
     function onInputChange(event) {
         setInput(event.target.value);
@@ -125,19 +129,38 @@ function App() {
     function onDetectSubmit () {
         returnClarifaiRequest(input);
     }
+    function onRouteChange (change) {
+        if (change === 'signin' || change === 'register'){
+            setIsSignedIn('false');
+        } else if (change === 'home') {
+            setIsSignedIn('true');
+        }
+        setRoute(change);
+    }
+
 
 
 
     return (
         <>
-        <div className="App">
-            <Navigation />
-            <Logo />
-            <Rank />
-            <ImageLinkForm onInputChange={onInputChange} onDetectSubmit={onDetectSubmit}/>
-            <FaceRecognition box={box} imageLink={input}/>
+            <div className="App">
+                <ParticlesBg type="cobweb" num={500} bg={true}/>
+                <Navigation isSignedIn={isSignedIn} onRouteChange={onRouteChange}/>
+                
+                {route === 'signin' ? 
+                    <SignIn onRouteChange={onRouteChange}/>
+                    : route === 'register' ?
+                    <Register onRouteChange={onRouteChange}/>
+                    :
+                    <div>
+                        <Logo />
+                        <Rank />
+                        <ImageLinkForm onInputChange={onInputChange} onDetectSubmit={onDetectSubmit}/>
+                        <FaceRecognition box={box} imageLink={input}/>
+                    </div>
+                }    
             </div>
-            <ParticlesBg type="cobweb" num={500} bg={true}/>
+            
         </>
         
     );
